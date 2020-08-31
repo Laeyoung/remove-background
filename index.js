@@ -1,6 +1,8 @@
 const superagent = require('superagent')
+const fs = require('fs')
 
 const detectron2Endpoint = 'https://master-ainized-detectron2-gkswjdzz.endpoint.ainize.ai'
+const removeBg = 'CrTKqaTctt7fizhrWHJm2zNs'
 
 async function getObjectCoordinates () {
   return superagent
@@ -9,6 +11,15 @@ async function getObjectCoordinates () {
     .type('form')
     .set({ preview: false })
     .attach('file', './cat.jpg')
+}
+
+async function getBgRemovedImage () {
+  return superagent
+    .post('https://api.remove.bg/v1.0/removebg')
+    .set({ 'X-Api-Key': removeBg })
+    .type('form')
+    .field('size', 'auto')
+    .attach('image_file', fs.createReadStream('./cat.jpg'))
 }
 
 
@@ -22,9 +33,9 @@ async function getObjectCoordinates () {
 
 
 
-getObjectCoordinates()
+getBgRemovedImage()
   .then(res => {
-    console.log(res)
+    fs.writeFileSync('no-bg.png', res.body)
   })
   .catch(err => {
     console.log(err)
