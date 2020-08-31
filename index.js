@@ -50,11 +50,11 @@ class RemoveDotBg {
   }
 }
 
-class RemoveBg {
-  constructor (detectron2Endpoint, removeBgApiKey) {
+class RemoveBackground {
+  constructor (removeBgApiKey) {
     this.detectron2 = new Detectron2(detectron2Endpoint)
     this.removeDotBg = new RemoveDotBg(removeBgApiKey)
   }
 }
 
-module.exports = RemoveBg
+module.exports = RemoveBackground
