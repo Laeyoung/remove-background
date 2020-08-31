@@ -2,7 +2,6 @@ const superagent = require('superagent')
 const fs = require('fs')
 
 const detectron2Endpoint = 'https://master-ainized-detectron2-gkswjdzz.endpoint.ainize.ai'
-const removeBg = 'CrTKqaTctt7fizhrWHJm2zNs'
 
 /**
  * @classdesc Represents an Detectron2 API call.
@@ -21,38 +20,41 @@ class Detectron2 {
 
   getObjectCoordinates () {
     return superagent
-      .post(`${detectron2Endpoint}/predictions`)
+      .post(`${this.baseURL}/predictions`)
       .accept('application/json')
       .type('form')
       .set({ preview: false })
       .attach('file', './cat.jpg')
   }
+}
 
-  getBgRemovedImage (removeBgApiKey) {
-    if (!removeBgApiKey) throw new Error('removeBgApiKey param is empty.')
+/**
+ * @classdesc Represents an RemoveDotBg API call.
+ * https://www.remove.bg/api
+ */
+class RemoveDotBg {
+  constructor (removeBgApiKey) {
+    this.baseURL = 'https://api.remove.bg/v1.0/removebg'
+    this.apiKey = removeBgApiKey
+  }
+
+  getBgRemovedImage (filePath) {
+    if (!filePath) throw new Error('filePath param is empty.')
 
     return superagent
-      .post('https://api.remove.bg/v1.0/removebg')
-      .set({ 'X-Api-Key': removeBgApiKey })
+      .post(this.baseURL)
+      .set({ 'X-Api-Key': this.apiKey })
       .type('form')
       .field('size', 'auto')
-      .attach('image_file', fs.createReadStream('./cat.jpg'))
+      .attach('image_file', fs.createReadStream(filePath))
   }
 }
 
 class RemoveBg {
-  constructor () {
-    this.detectron2 = new Detectron2(this.baseURL)
+  constructor (detectron2Endpoint, removeBgApiKey) {
+    this.detectron2 = new Detectron2(detectron2Endpoint)
+    this.removeDotBg = new RemoveDotBg(removeBgApiKey)
   }
 }
 
 module.exports = RemoveBg
-
-// ---- For Testing ----
-new RemoveBg().detectron2.getBgRemovedImage(removeBg)
-  .then(res => {
-    fs.writeFileSync('no-bg-cat.png', res.body)
-  })
-  .catch(err => {
-    console.log(err)
-  })
