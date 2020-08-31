@@ -1,0 +1,22 @@
+{
+  "name": "remove-bg",
+  "version": "0.1.0",
+  "description": "find object and remove background",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Laeyoung/remove-bg.git"
+  },
+  "keywords": [
+    "png"
+  ],
+  "author": "Laeyoung Chang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Laeyoung/remove-bg/issues"
+  },
+  "homepage": "https://github.com/Laeyoung/remove-bg#readme"
+}
